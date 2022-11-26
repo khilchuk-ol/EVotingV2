@@ -31,6 +31,6 @@ public class SimpleVotingStrategy
 
         var encrypted = rsa.Encrypt(BitConverter.GetBytes(bulletinId), RSAEncryptionPadding.Pkcs1);
         
-        _votingCenter.Vote(encrypted, signedMsg);
+        _votingCenter.Vote(encrypted, signedMsg, encrypted);
     }
 }

@@ -27,7 +27,11 @@ public class ClientVotingService
         ValidateData(user, candidateId);
         
         // lab 1
-        var strategy = new SimpleVotingStrategy(_dataProvider, _votingCenterService);
+        //var strategy = new SimpleVotingStrategy(_dataProvider, _votingCenterService);
+        //strategy.Vote(user, candidateId);
+        
+        // lab 2
+        var strategy = new BlindSignVotingStrategy(_dataProvider, _votingCenterService);
         strategy.Vote(user, candidateId);
     }
 

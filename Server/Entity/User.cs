@@ -19,10 +19,12 @@ public class User
 
     public byte[] ApplyPrivateKey(byte[] msg)
     {
-        var rsaService = new RSACryptoServiceProvider();
-        rsaService.ImportParameters(rsa.ExportParameters(true));
-
-        return rsaService.Encrypt(msg, false);
+        return rsa.Decrypt(msg, RSAEncryptionPadding.Pkcs1);
+    }
+    
+    public byte[] ApplyPublicKey(byte[] msg)
+    {
+        return rsa.Encrypt(msg, RSAEncryptionPadding.Pkcs1);
     }
     
     public byte[] SignWithPrivateKey(byte[] msg)
