@@ -64,13 +64,13 @@ public class BlindSignVotingStrategy
         };
     }
 
-    public void Vote(byte[] msg, byte[] signed, byte[] signedData)
+    public void Vote(byte[] msg, byte[] signed, byte[] _)
     {
         var bulletinId = _votingCenter.ApplyPrivateKey(msg);
         var bulletin = _dataProvider.UnwrapBulletinId(BitConverter.ToInt32(bulletinId));
 
         // check by other means
-        if (!_votingCenter.CheckIfSigned(signed, signedData))
+        if (!_votingCenter.CheckIfSigned(signed))
         {
             throw new Exception("sign data and message data mismatched; signed incorrectly");
         }

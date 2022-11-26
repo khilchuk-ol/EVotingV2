@@ -1,6 +1,4 @@
 using System.Security.Cryptography;
-using Server.DataSource;
-using Server.Entity;
 using Server.Services.Strategies;
 
 namespace Server.Services;
@@ -56,5 +54,10 @@ public class VotingCenterService
     public byte[] ApplyPrivateKey(byte[] msg)
     {
         return rsa.Decrypt(msg, RSAEncryptionPadding.Pkcs1);
+    }
+    
+    public bool CheckIfSigned(byte[] msg)
+    {
+        return true;
     }
 }
