@@ -1,6 +1,7 @@
 using Client.Services.Strategies;
 using Server.Entity;
 using Server.Services;
+using Server.Services.Registration;
 
 namespace Client.Services;
 
@@ -10,10 +11,16 @@ public class ClientVotingService
 
     private VotingCenterService _votingCenterService;
 
-    public ClientVotingService(DataProviderService dataProviderService, VotingCenterService votingCenterService)
+    private RegistrationCenterService _registrationCenter;
+
+    public ClientVotingService(
+        DataProviderService dataProviderService, 
+        VotingCenterService votingCenterService, 
+        RegistrationCenterService registrationCenter)
     {
         _dataProvider = dataProviderService;
         _votingCenterService = votingCenterService;
+        _registrationCenter = registrationCenter;
     }
     
     public void Vote(int userId, int candidateId)
@@ -31,7 +38,11 @@ public class ClientVotingService
         //strategy.Vote(user, candidateId);
         
         // lab 2
-        var strategy = new BlindSignVotingStrategy(_dataProvider, _votingCenterService);
+        //var strategy = new BlindSignVotingStrategy(_dataProvider, _votingCenterService);
+        //strategy.Vote(user, candidateId);
+        
+        // lab 3
+        var strategy = new PolyVotingStrategy(_dataProvider, _votingCenterService, _registrationCenter);
         strategy.Vote(user, candidateId);
     }
 

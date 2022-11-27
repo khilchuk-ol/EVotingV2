@@ -16,6 +16,8 @@ public class DataProviderService
     public List<Candidate> GetAllCandidates() => source.Candidates;
     
     internal List<VoteResult> GetAllVoteResults() => source.VoteResults;
+
+    public int GetUsersCount() => source.Users.Count;
     
     public User? GetUserById(int id) => source.Users.FirstOrDefault(u => u.Id == id);
     
