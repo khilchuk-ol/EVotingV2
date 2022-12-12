@@ -30,6 +30,8 @@ public class DataProviderService
     internal void SaveVoteResult(VoteResult vr) => source.VoteResults.Add(vr);
     
     internal void SaveBulletin(Bulletin b) => source.Bulletins.Add(b);
+
+    public List<User> GetVoters(int limit = -1) => source.Users.FindAll(u => u.CanVote).Take(limit).ToList();
     
     public IEnumerable<VotingResultsModel> GetVotingResults()
     {

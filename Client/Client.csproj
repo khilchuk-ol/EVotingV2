@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Server\Server.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ElGamalExt" Version="0.9.3.32706" />
+    </ItemGroup>
+
 </Project>

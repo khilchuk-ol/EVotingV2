@@ -38,22 +38,22 @@ public class InMemoryDataSource
 
         Users.AddRange(new[]
         {
-            new User
+            new User(1024 + 256 * 3, 2048 + 512 * 3)
             {
                 Id = 11111111,
                 CanVote = true
             },
-            new User
+            new User(1024 + 256 * 2, 2048 + 512 * 2)
             {
                 Id = 11111112,
                 CanVote = true
             },
-            new User
+            new User(1024 + 256, 2048 + 512)
             {
                 Id = 11111113,
                 CanVote = true
             },
-            new User
+            new User(1024, 2048)
             {
                 Id = 11111114,
                 CanVote = true

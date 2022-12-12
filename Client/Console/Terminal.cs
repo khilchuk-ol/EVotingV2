@@ -52,7 +52,7 @@ namespace Client.Console
 
         private void Results()
         {
-            var res = dataProvider.GetVotingResults();
+            var res = votingService.GetVotingResults();
             
             System.Console.Clear();
             System.Console.WriteLine("\n--------- RESULTS ---------");
