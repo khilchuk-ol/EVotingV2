@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Security.Cryptography;
 using Server.Entity;
 using Server.Models;
@@ -18,6 +19,8 @@ public class VotingCenterService
 
     private RegistrationCenterService _registrationCenterService;
 
+    public SeparatedVotingStrategy[] SeparatedVotingStrategies { get; }
+    
     public VotingCenterService(DataProviderService data, RegistrationCenterService registrationCenterService)
     {
         _registrationCenterService = registrationCenterService;
@@ -26,6 +29,12 @@ public class VotingCenterService
         rsa = RSA.Create();
         
         dsa = DSA.Create();
+
+        SeparatedVotingStrategies = new[]
+        {
+            new SeparatedVotingStrategy(),
+            new SeparatedVotingStrategy()
+        };
     }
 
     public void Vote(byte[] msg, byte[] sign, byte[] signedData)
@@ -40,8 +49,8 @@ public class VotingCenterService
         // strategy.Vote(new Bulletin { Message = msg, Sign = sign});
         
         // lab 2
-        var strategy = new BlindSignVotingStrategy(_dataProvider, this);
-        strategy.Vote(msg, sign, signedData);
+        // var strategy = new BlindSignVotingStrategy(_dataProvider, this);
+        // strategy.Vote(msg, sign, signedData);
     }
 
     public void Vote(PolyBulletinMessage msg)
@@ -69,15 +78,30 @@ public class VotingCenterService
         return rsa.SignData(msg, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
     }
     
-    public bool CheckIfSigned(byte[] msg, byte[] data)
+    public bool CheckIfSigned(byte[] msg, byte[] signature)
     {
-        return rsa.VerifyData(msg, data, HashAlgorithmName.SHA512,
+        return rsa.VerifyData(msg, signature, HashAlgorithmName.SHA512,
             RSASignaturePadding.Pkcs1);
+    }
+    
+    public byte[] ApplyPublicKey(byte[] msg)
+    {
+        return rsa.Encrypt(msg, RSAEncryptionPadding.Pkcs1);
     }
 
     public byte[] ApplyPrivateKey(byte[] msg)
     {
         return rsa.Decrypt(msg, RSAEncryptionPadding.Pkcs1);
+    }
+
+    public BigInteger Encrypt(BigInteger x)
+    {
+        return BigInteger.Pow(x, 7) % 33;
+    }
+    
+    private BigInteger Decrypt(BigInteger x)
+    {
+        return BigInteger.Pow(x, 3) % 33;
     }
     
     public bool CheckIfSigned(byte[] msg)
@@ -131,5 +155,40 @@ public class VotingCenterService
         }
 
         return verified;
+    }
+
+    public Dictionary<int, int> GetSeparatedResults()
+    {
+        var a = SeparatedVotingStrategies[0];
+        var b = SeparatedVotingStrategies[1];
+        
+        var res = new Dictionary<int, int>();
+
+        foreach (var key in a.Bulletins.Keys)
+        {
+            if (!b.Bulletins.ContainsKey(key))
+            {
+                throw new Exception("missing bulletin part");
+            }
+            
+            var x = new BigInteger(a.Bulletins[key]);
+            var y = new BigInteger(b.Bulletins[key]);
+
+            var multiplied = x * y;
+            
+            var decrypted = Decrypt(multiplied);
+            var candidateId = (int)decrypted;
+            
+            if (res.ContainsKey(candidateId))
+            {
+                res[candidateId] += 1;
+            }
+            else
+            {
+                res.Add(candidateId, 1);
+            }
+        }
+
+        return res;
     }
 }
